@@ -1,7 +1,10 @@
 const { response } = require("express");
-const { validationResult } = require("express-validator");
 const User = require("../models/user-module");
 
+
+//? -----------------------------------------------------
+//? Controlador para obtener todos los usuarios
+//? -----------------------------------------------------
 const getUsers = async (req, res) => {
   const users = await User.find(
     {},
@@ -14,21 +17,14 @@ const getUsers = async (req, res) => {
   });
 };
 
+
+//? -----------------------------------------------------
+//? Controlador para crear un nuevo usuario
+//? -----------------------------------------------------
 const createUser = async (req, res = response) => {
-
-    const { str_name_user, str_email_user, str_password_user } = req.body;
-
-    const errors = validationResult( req );
-
-    if( !errors.isEmpty() ){
-        return res.status(400).json({
-            ok: false,
-            errors: errors.mapped()
-        });
-    }
+  const { str_name_user, str_email_user, str_password_user } = req.body;
 
   try {
-
     const existEmail = await User.findOne({ str_email_user });
 
     if (existEmail) {
