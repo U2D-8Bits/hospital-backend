@@ -15,16 +15,15 @@ const getUsers = async (req, res) => {
 
 const createUser = async (req, res = response) => {
   try {
-
     const { str_name_user, str_email_user, str_password_user } = req.body;
 
     const existEmail = await User.findOne({ str_email_user });
 
-    if( existEmail ){
-        return res.status(400).json({
-            ok: false,
-            msg: `El correo ${str_email_user} ya está registrado`
-        });
+    if (existEmail) {
+      return res.status(400).json({
+        ok: false,
+        msg: `El correo ${str_email_user} ya está registrado`,
+      });
     }
 
     const user = new User(req.body);
@@ -35,7 +34,6 @@ const createUser = async (req, res = response) => {
       ok: true,
       user,
     });
-
   } catch (error) {
     console.log(error);
 
