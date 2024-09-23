@@ -15,15 +15,7 @@ app.use(cors());
 dbConnection();
 
 // Rutas
-app.get( '/', (req, res)=>{
-    
-    res.json({
-        ok: true,
-        msg: 'Hola Mundo'
-    });
-
-
-});
+app.use( 'api/users', require('./routes/user-routes') );
 
 app.listen( process.env.PORT, () => {
     console.log(`Servidor en puerto ${process.env.PORT}`);
