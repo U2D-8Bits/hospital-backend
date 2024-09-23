@@ -1,9 +1,13 @@
 const User = require('../models/user-module');
 
 const getUsers = async (req, res) => {
+
+    const users = await User.find({}, 'str_name_user str_email_user str_role_user bln_google_user');
+    
+
   res.json({
     ok: true,
-    usuarios:[]
+    users
   });
 };
 
