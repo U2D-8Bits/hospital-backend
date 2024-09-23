@@ -2,22 +2,12 @@
     Ruta: /api/users
 */
 
-const { Router } = require('express');
+const { Router } = require("express");
+const { getUsers } = require('../controllers/users-controller.js');
 
 
 const router = Router();
 
-router.get( '/', (req, res) =>{
+router.get("/", getUsers );
 
-    res.json({
-        ok: true,
-        usuarios: ({
-            int_id_user: 123,
-            str_name_user: 'Israel'
-        })
-    });
-
-});
-
-
-module.exports = router; 
+module.exports = router;
