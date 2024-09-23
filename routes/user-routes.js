@@ -4,7 +4,7 @@
 
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { getUsers, createUser } = require("../controllers/users-controller.js");
+const { getUsers, createUser, updateUser } = require("../controllers/users-controller.js");
 const { validateFields } = require("../middlewares/validate-fields");
 
 const router = Router();
@@ -32,6 +32,21 @@ router.post(
     validateFields,
   ],
   createUser
+);
+
+//? -----------------------------------------------------
+//? Ruta para actualizar un usuario
+//? -----------------------------------------------------
+
+router.put(
+  "/:id",
+  [
+    check("str_name_user", "El Nombre es un campo obligatorio").not().isEmpty(),
+    check("str_role_user", "El Rol es un campo obligatorio").not().isEmpty(),
+    check("str_email_user", "El Correo elctrónico es un campo obligatorio").isEmail(),
+    validateFields,
+  ],
+  updateUser
 );
 
 module.exports = router;
