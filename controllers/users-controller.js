@@ -2,7 +2,6 @@ const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user-module");
 
-
 //? -----------------------------------------------------
 //? Controlador para obtener todos los usuarios
 //? -----------------------------------------------------
@@ -17,7 +16,6 @@ const getUsers = async (req, res) => {
     users,
   });
 };
-
 
 //? -----------------------------------------------------
 //? Controlador para crear un nuevo usuario
@@ -58,72 +56,58 @@ const createUser = async (req, res = response) => {
   }
 };
 
-
 //? -----------------------------------------------------
 //? Controlador por actualizar un usuario
 //? -----------------------------------------------------
 
-const updateUser = async ( req, res = response) => {
-
+const updateUser = async (req, res = response) => {
   const uid = req.params.id;
 
-
   try {
-
     const existUser = await User.findById(uid);
 
-    if( !existUser ){
-
+    if (!existUser) {
       return res.status(404).json({
         ok: false,
-        msg: 'El usuario con el id proporcionado no existe'
+        msg: "El usuario con el id proporcionado no existe",
       });
     }
 
-    const fields = req.body;
+    const { str_email_user, str_password_user, bln_google_user, ...fields } =
+      req.body;
 
-    if( existUser.str_email_user === req.body.str_email_user ){
+    if (existUser.str_email_user != str_email_user) {
+      
+      const existEmail = await User.findOne({
+        str_email_user,
+      });
 
-      delete fields.str_email_user;
-
-    }else{
-
-      const existEmail = await User.findOne({ str_email_user: req.body.str_email_user});
-
-      if( existEmail ){
-
+      if (existEmail) {
+        
         return res.status(400).json({
           ok: false,
-          msg: 'Ya existe un usuario con ese correo'
+          msg: "Ya existe un usuario con ese correo",
         });
-
+      
       }
-
     }
 
-
-
-    delete fields.str_password_user;
-    delete fields.bln_google_user;
-
-    const userUpdated = await User.findByIdAndUpdate( uid, fields, { new: true });
+    const userUpdated = await User.findByIdAndUpdate(uid, fields, {
+      new: true,
+    });
 
     return res.status(200).json({
       ok: true,
-      user: userUpdated
-    })
-
-
+      user: userUpdated,
+    });
   } catch (error) {
     console.log(error);
 
     res.status(500).json({
       ok: false,
       msg: "Error inesperado... revisar logs",
-    })
+    });
   }
-
-
 };
 
 module.exports = {
