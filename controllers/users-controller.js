@@ -1,6 +1,7 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user-module");
+const { generateToken } = require("../helpers/jwt-helper");
 
 //? -----------------------------------------------------
 //? Controlador para obtener todos los usuarios
@@ -21,7 +22,7 @@ const getUsers = async (req, res) => {
 //? Controlador para crear un nuevo usuario
 //? -----------------------------------------------------
 const createUser = async (req, res = response) => {
-  const { str_name_user, str_email_user, str_password_user } = req.body;
+  const { str_email_user, str_password_user } = req.body;
 
   try {
     const existEmail = await User.findOne({ str_email_user });
@@ -42,9 +43,12 @@ const createUser = async (req, res = response) => {
     //* Guardar usuario
     await user.save();
 
+    const token = await generateToken(user.id);
+
     res.json({
       ok: true,
       user,
+      token,
     });
   } catch (error) {
     console.log(error);
