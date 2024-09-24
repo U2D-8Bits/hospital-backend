@@ -82,24 +82,25 @@ const updateUser = async ( req, res = response) => {
 
     const fields = req.body;
 
-    if( existUser.str_email_user === req.bosy.str_email_user ){
+    if( existUser.str_email_user === req.body.str_email_user ){
 
-      delete fields.str_email_user
+      delete fields.str_email_user;
 
     }else{
 
-      const existEmail = User.findOne({ str_email_user: req.body.str_email_user })
+      const existEmail = await User.findOne({ str_email_user: req.body.str_email_user});
 
       if( existEmail ){
 
         return res.status(400).json({
           ok: false,
-          msg: `El correo electrónico ${ existEmail } ya existe en la base de datos!`
+          msg: 'Ya existe un usuario con ese correo'
         });
 
       }
 
     }
+
 
 
     delete fields.str_password_user;
@@ -109,7 +110,7 @@ const updateUser = async ( req, res = response) => {
 
     return res.status(200).json({
       ok: true,
-      userUpdated
+      user: userUpdated
     })
 
 
