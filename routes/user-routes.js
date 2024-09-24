@@ -4,7 +4,7 @@
 
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { getUsers, createUser, updateUser } = require("../controllers/users-controller.js");
+const { getUsers, createUser, updateUser, deleteUser } = require("../controllers/users-controller.js");
 const { validateFields } = require("../middlewares/validate-fields");
 
 const router = Router();
@@ -48,5 +48,10 @@ router.put(
   ],
   updateUser
 );
+
+//? -----------------------------------------------------
+//? Ruta para eliminar un usuario
+//? -----------------------------------------------------
+router.delete("/:id", deleteUser);
 
 module.exports = router;

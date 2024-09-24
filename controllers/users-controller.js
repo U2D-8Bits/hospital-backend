@@ -77,20 +77,19 @@ const updateUser = async (req, res = response) => {
       req.body;
 
     if (existUser.str_email_user != str_email_user) {
-      
       const existEmail = await User.findOne({
         str_email_user,
       });
 
       if (existEmail) {
-        
         return res.status(400).json({
           ok: false,
           msg: "Ya existe un usuario con ese correo",
         });
-      
       }
     }
+
+    fields.str_email_user = str_email_user;
 
     const userUpdated = await User.findByIdAndUpdate(uid, fields, {
       new: true,
@@ -110,8 +109,42 @@ const updateUser = async (req, res = response) => {
   }
 };
 
+//? -----------------------------------------------------
+//? Controlador de eliminación lógica de usuario
+//? -----------------------------------------------------
+
+const deleteUser = async (req, res = response) => {
+  const uid = req.params.id;
+
+  try {
+    const existUser = await User.findById(uid);
+
+    if (!existUser) {
+      return res.status(404).json({
+        ok: false,
+        msg: `El usuario con el id ${uid} no existe`,
+      });
+    }
+
+    await User.findByIdAndDelete(uid);
+
+    return res.status(200).json({
+      ok: true,
+      uid,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
   updateUser,
+  deleteUser,
 };
