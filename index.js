@@ -21,6 +21,7 @@ dbConnection();
 app.use( '/api/users', require('./routes/user-routes') );
 app.use( '/api/auth', require('./routes/auth-routes') );
 app.use( '/api/hospitals', require('./routes/hospitals-routes') );
+app.use( '/api/doctors', require('./routes/doctors-routes') );
 
 app.listen( process.env.PORT, () => {
     console.log(`Servidor en puerto ${process.env.PORT}`);

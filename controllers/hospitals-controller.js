@@ -10,6 +10,11 @@ const Hospital = require("../models/hospital-model");
 
 const getHospitals = async (req, res = response) => {
 
+    return res.status(200).json({
+        ok: true,
+        msg: 'getHospitals'
+    })
+
 }
 
 
