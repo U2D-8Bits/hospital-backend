@@ -24,6 +24,32 @@ const getHospitals = async (req, res = response) => {
 
 const createHospital = async (req, res = response) => {
 
+    const uid = req.uid;
+    const newHospital = new Hospital({
+        user: uid,    
+        ...req.body
+    });
+
+    try {
+
+        const hospitalDB = await newHospital.save();
+
+        return res.status(200).json({
+            ok: true,
+            hospital: hospitalDB
+        })
+        
+    } catch (error) {
+        
+        console.log(error);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+
+    }
+
 }
 
 //? -----------------------------------------------------

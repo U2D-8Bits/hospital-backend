@@ -4,6 +4,11 @@
 
 //? ------------------- Imports -------------------
 const { Router } = require('express');
+const { check } = require('express-validator');
+
+const { validateJWT } = require('../middlewares/validate-jwt');
+const { validateFields } = require('../middlewares/validate-fields');
+
 const { getHospitals, createHospital, updateHospital, deleteHospital } = require('../controllers/hospitals-controller');
 
 const router = Router();
@@ -18,7 +23,11 @@ router.get('/', getHospitals);
 //? --------------- Create Hospitals Route --------------
 //? ---------------------------------------------------
 
-router.post('/', createHospital);
+router.post('/', [
+    validateJWT,
+    check('str_name_hospital', 'Nombre del hospital es un campo requerido').not().isEmpty(),
+    validateFields
+], createHospital);
 
 //? ---------------------------------------------------
 //? --------------- Update Hospitals Route --------------
