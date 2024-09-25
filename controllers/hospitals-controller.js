@@ -10,10 +10,24 @@ const Hospital = require("../models/hospital-model");
 
 const getHospitals = async (req, res = response) => {
 
-    return res.status(200).json({
-        ok: true,
-        msg: 'getHospitals'
-    })
+    const hospitals = await Hospital.find().
+        populate('user', 'str_name_user')
+
+    try {
+
+        return res.status(200).json({
+            ok: true,
+            hospitals
+        })
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+
 
 }
 

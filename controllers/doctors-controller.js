@@ -9,9 +9,13 @@ const Doctor = require('../models/doctor-model');
 
 const getDoctors = async (req, res = response) => {
 
+    const doctors = await Doctor.find().
+    populate('user', 'str_name_user').
+    populate('hospital', 'str_name_hospital');
+
     return res.status(200).json({
         ok: true,
-        msg: 'getDoctors'
+        doctors
     })
 
 }
