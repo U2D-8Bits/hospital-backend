@@ -21,10 +21,32 @@ const getDoctors = async (req, res = response) => {
 //? -----------------------------------------------------
 
 const createDoctor = async (req, res = response) => {
-    return res.status(200).json({
-        ok: true,
-        msg: 'createDoctor'
-    })
+    
+    const uid = req.uid;
+    
+    const newDoctor = new Doctor({
+        user: uid,
+        ...req.body
+    });
+
+
+    try {
+ 
+        const doctorDB = await newDoctor.save();
+
+        return res.status(200).json({
+            ok: true,
+            doctor: doctorDB
+        })
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
 }
 
 //? -----------------------------------------------------
