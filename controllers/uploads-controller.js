@@ -1,6 +1,8 @@
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
 
+const { updateFile } = require('../helpers/update-file');
+
 const uploadFile = async (req, res = response) => {
 
     const collection = req.params.collection;
@@ -45,6 +47,8 @@ const uploadFile = async (req, res = response) => {
                 msg: 'Error al mover el archivo'    
             });
         }
+
+        updateFile( collection, uid, nameFile);
     
         return res.status(200).json({
             ok: true,
