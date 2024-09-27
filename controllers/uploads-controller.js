@@ -84,8 +84,6 @@ const getFile = async (req, res = response) => {
 
 }
 
-
-
 module.exports = {
     uploadFile,
     getFile
