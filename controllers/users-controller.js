@@ -7,15 +7,37 @@ const { generateToken } = require("../helpers/jwt-helper");
 //? Controlador para obtener todos los usuarios
 //? -----------------------------------------------------
 const getUsers = async (req, res) => {
-  const users = await User.find(
-    {},
-    "str_name_user str_email_user str_role_user bln_google_user"
-  );
+  
+  const since = Number(req.query.since) || 0;
+  
 
-  res.json({
-    ok: true,
-    users,
-  });
+  const [users, total] = await Promise.all([
+    await User
+    .find({},"str_name_user str_email_user str_role_user bln_google_user")
+    .skip(since)
+    .limit(10),
+    await User.countDocuments()
+  ]);
+
+
+  try {
+
+    res.json({
+      ok: true,
+      users,
+      total
+    });
+
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error inesperado... revisar logs",
+    })  
+  }
+  
+  
 };
 
 //? -----------------------------------------------------
