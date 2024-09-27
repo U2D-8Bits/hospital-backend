@@ -1,8 +1,14 @@
+const path = require('path');
+const fs = require('fs');
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
 
 const { updateFile } = require('../helpers/update-file');
 
+
+//? -------------------------------------------------
+//? Controlador para subir archivos
+//? -------------------------------------------------
 const uploadFile = async (req, res = response) => {
 
     const collection = req.params.collection;
@@ -56,12 +62,31 @@ const uploadFile = async (req, res = response) => {
             nameFile
         });
     });
+}
 
+//? -------------------------------------------------
+//? Controlador para mostrar archivos
+//? -------------------------------------------------
 
+const getFile = async (req, res = response) => {
+
+    const collection = req.params.collection;
+    const file = req.params.file;
+
+    const pathFile  = path.join( __dirname, `../uploads/${collection}/${file}` ); 
+
+    if( fs.existsSync(pathFile) ){
+        res.sendFile(pathFile);
+    }else{
+        const pathFile = path.join( __dirname, `../uploads/no-image.png` );
+        res.sendFile(pathFile);
+    }
 
 }
 
 
+
 module.exports = {
-    uploadFile
+    uploadFile,
+    getFile
 }
