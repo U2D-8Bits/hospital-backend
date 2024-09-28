@@ -31,6 +31,43 @@ const getHospitals = async (req, res = response) => {
 
 }
 
+//? -----------------------------------------------------
+//? Controller to get a hospital by ID
+//? -----------------------------------------------------
+
+const getHospitalById = async (req, res = response) => {
+
+    const uid = req.params.id;
+
+    try {
+
+        const hospitalDB = await Hospital.findById(uid)
+
+        if(!hospitalDB){
+            return res.status(404).json({
+                ok: false,
+                msg: 'Hospital no encontrado por id'
+            })
+        }
+
+        await hospitalDB.populate('user', 'str_name_user')
+
+        return res.status(200).json({
+            ok: true,
+            hospital: hospitalDB
+        })
+
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        })
+    }
+
+}
+
 
 //? -----------------------------------------------------
 //? Controller to create a new hospital
@@ -153,6 +190,7 @@ const deleteHospital = async (req, res = response) => {
 
 module.exports = {
     getHospitals,
+    getHospitalById,
     createHospital,
     updateHospital,
     deleteHospital
