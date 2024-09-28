@@ -52,6 +52,24 @@ const login = async (req, res = response) => {
   }
 };
 
+
+
+//? -----------------------------------------------------
+//? Controlador para iniciar sesión con Google
+//? -----------------------------------------------------
+
+const googleSignIn = async (req, res = response) => {
+  
+  const token = req.body.token;
+
+  return res.status(200).json({
+    ok: true,
+    token,
+  });
+
+}
+
 module.exports = {
   login,
+  googleSignIn
 };
