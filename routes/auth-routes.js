@@ -6,6 +6,7 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validate-fields");
 const { login, googleSignIn } = require("../controllers/auth-controller");
+const { validateJWT } = require("../middlewares/validate-jwt");
 
 const router = Router();
 
@@ -27,6 +28,12 @@ router.post("/google", [
     check("token", "El token de Google es un campo obligatorio").not().isEmpty(),
     validateFields
 ], googleSignIn );
+
+
+//? -----------------------------------------------------
+//? Ruta para renovar el token
+//? -----------------------------------------------------
+router.get("/renew", validateJWT, ); 
 
 
 

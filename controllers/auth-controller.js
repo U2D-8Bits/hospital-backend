@@ -102,10 +102,28 @@ const googleSignIn = async (req, res = response) => {
     });
 
   }
+}
 
 
+//? -----------------------------------------------------
+//? Controlador para renovar el token
+//? -----------------------------------------------------
+
+const renewToken = async(req, res = response) => {
+
+  const uid = req.uid;
+
+  // Generar un nuevo JWT
+  const token = await generateToken( uid );
+
+  return res.status(200).json({
+    ok: true,
+    token
+  })
 
 }
+
+
 
 module.exports = {
   login,
