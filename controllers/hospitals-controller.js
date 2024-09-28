@@ -109,12 +109,13 @@ const createHospital = async (req, res = response) => {
 
 const updateHospital = async (req, res = response) => {
 
-    const uid = req.params.id;
+    const id = req.params.id;
+    const uid = req.uid;
 
     
     try {
         
-        const hospitalDB = await Hospital.findById(uid);
+        const hospitalDB = await Hospital.findById(id);
     
         if( !hospitalDB ){
             return res.status(404).json({
@@ -123,13 +124,12 @@ const updateHospital = async (req, res = response) => {
             })
         }
 
-        const { str_name_hospital, str_img_hospital, user  } = req.body;
+        const hospitalChanges = {
+            ...req.body,
+            user: uid
+        }
 
-        const hospitalUpdated = await Hospital.findByIdAndUpdate(uid, {
-            str_name_hospital,
-            str_img_hospital,
-            user
-        }, { new: true });
+        const hospitalUpdated = await Hospital.findByIdAndUpdate( id, hospitalChanges, { new: true } );
 
         return res.status(200).json({
             ok: true,
@@ -155,11 +155,11 @@ const updateHospital = async (req, res = response) => {
 
 const deleteHospital = async (req, res = response) => {
 
-    const uid = req.params.id;
+    const id = req.params.id;
 
     try {
 
-        const hospitalDB = await Hospital.findById(uid);
+        const hospitalDB = await Hospital.findById(id);
 
         if( !hospitalDB ){
             return res.stauts(404).json({
@@ -168,7 +168,7 @@ const deleteHospital = async (req, res = response) => {
             })
         }
 
-        await Hospital.findByIdAndDelete(uid);
+        await Hospital.findByIdAndDelete(id);
 
         return res.status(200).json({
             ok: true,
