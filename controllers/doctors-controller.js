@@ -18,6 +18,45 @@ const getDoctors = async (req, res = response) => {
   });
 };
 
+
+//? -----------------------------------------------------
+//? Controller to get a doctor by ID
+//? -----------------------------------------------------
+
+const getDoctorById = async (req, res = response) => {
+
+  const uid = req.params.id;
+
+  try {
+
+    const doctorDB = await Doctor.findById(uid)
+    .populate('user', 'str_name_user')
+    .populate('hospital', 'str_name_hospital');
+
+    if( !doctorDB ){
+      return res.status(404).json({
+        ok: false,
+        msg: 'Doctor no encontrado por id'
+      })
+    }
+
+    return res.status(200).json({
+      ok: true,
+      doctor: doctorDB
+    })
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Por favor hable con el administrador",
+    })
+  }
+
+}
+
+
+
 //? -----------------------------------------------------
 //? Controller to create a new doctor
 //? -----------------------------------------------------
