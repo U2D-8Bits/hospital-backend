@@ -25,11 +25,11 @@ const getDoctors = async (req, res = response) => {
 
 const getDoctorById = async (req, res = response) => {
 
-  const uid = req.params.id;
+  const id = req.params.id;
 
   try {
 
-    const doctorDB = await Doctor.findById(uid)
+    const doctorDB = await Doctor.findById(id)
     .populate('user', 'str_name_user')
     .populate('hospital', 'str_name_hospital');
 
@@ -90,10 +90,11 @@ const createDoctor = async (req, res = response) => {
 //? -----------------------------------------------------
 
 const updateDoctor = async (req, res = response) => {
-  const uid = req.params.id;
+  const id = req.params.id;
+  const uid = req.uid;
 
   try {
-    const doctorDB = Doctor.findById(uid);
+    const doctorDB = Doctor.findById(id);
 
     if (!doctorDB) {
       return res.status(404).json({
@@ -102,12 +103,25 @@ const updateDoctor = async (req, res = response) => {
       });
     }
 
-    const { user, hospital, ...fields } = req.body;
+    const existDoctor = await Doctor.findOne({
+      str_name_doctor: req.body.str_name_doctor,
+    })
 
-    if (doctorDB.str_name_doctor != fields.str_name_doctor) {
-      const existDoctor = await Doctor.findOne({
-        str_name_doctor: fields.str_name_doctor,
+    if (existDoctor) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Ya existe un doctor con ese nombre",
       });
+    }
+
+    const doctorChanges = {
+      ...req.body,  
+      user: uid,
+    }
+
+    await Doctor.findByIdAndUpdate( id, doctorChanges, { new: true }); 
+
+
 
       if (existDoctor) {
         return res.status(400).json({
@@ -115,19 +129,14 @@ const updateDoctor = async (req, res = response) => {
           msg: "Ya existe un doctor con ese nombre",
         });
       }
-    }
-
-    fields.user = uid;
-
-    const doctorUpdated = await Doctor.findByIdAndUpdate(uid, fields, {
-      new: true,
-    });
 
     return res.status(200).json({
       ok: true,
       doctor: doctorUpdated,
     });
+
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -142,10 +151,10 @@ const updateDoctor = async (req, res = response) => {
 //? -----------------------------------------------------
 
 const deleteDoctor = async (req, res = response) => {
-  const uid = req.params.id;
+  const id = req.params.id;
 
   try {
-    const doctorDB = Doctor.findById(uid);
+    const doctorDB = Doctor.findById(id);
 
     if (!doctorDB) {
       return res.status(404).json({
@@ -154,7 +163,7 @@ const deleteDoctor = async (req, res = response) => {
       });
     }
 
-    await Doctor.findByIdAndDelete(uid);
+    await Doctor.findByIdAndDelete(id);
 
     return res.status(200).json({
       ok: true,
@@ -167,11 +176,6 @@ const deleteDoctor = async (req, res = response) => {
       msg: "Por favor hable con el administrador",
     });
   }
-
-  return res.status(200).json({
-    ok: true,
-    msg: "deleteDoctor",
-  });
 };
 
 //? -----------------------------------------------------
