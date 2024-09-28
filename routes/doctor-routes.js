@@ -34,13 +34,23 @@ router.post('/', [
 //? --------------- Update Doctors Route --------------
 //? ---------------------------------------------------
 
-router.put('/:id', updateDoctor);
+router.put('/:id', [
+    validateJWT,
+    check('str_name_doctor', 'El nombre del doctor es un campo requerido').not().isEmpty(),
+    check('hospital', 'El hospital id debe ser válido').isMongoId(),
+    check('id', 'El id del doctor debe ser válido').isMongoId(),
+    validateFields
+], updateDoctor);
 
 //? ---------------------------------------------------
 //? --------------- Delete Doctors Route --------------
 //? ---------------------------------------------------
 
-router.delete('/:id', deleteDoctor);
+router.delete('/:id', [
+    validateJWT,
+    check('id', 'El id del doctor debe ser válido').isMongoId(),
+    validateFields
+], deleteDoctor);
 
 //? ---------------------------------------------------
 //? --------------- Export Module --------------
