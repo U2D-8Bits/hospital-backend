@@ -33,13 +33,19 @@ router.post('/', [
 //? --------------- Update Hospitals Route --------------
 //? ---------------------------------------------------
 
-router.put('/:id', updateHospital);
+router.put('/:id', [
+    validateJWT,
+    check('str_name_hospital', 'Nombre del hospital es un campo requerido').not().isEmpty(),
+    validateFields
+], updateHospital);
 
 //? ---------------------------------------------------
 //? --------------- Delete Hospitals Route --------------
 //? ---------------------------------------------------
 
-router.delete('/:id', deleteHospital);
+router.delete('/:id', [
+    validateJWT,
+], deleteHospital);
 
 //? ---------------------------------------------------
 //? --------------- Export Module --------------
