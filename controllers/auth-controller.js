@@ -2,6 +2,7 @@ const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user-module");
 const { generateToken } = require("../helpers/jwt-helper");
+const { googleVerify } = require("../helpers/google-helper");
 //? -----------------------------------------------------
 //? Controlador para iniciar sesión (Login)
 //? -----------------------------------------------------
@@ -60,12 +61,26 @@ const login = async (req, res = response) => {
 
 const googleSignIn = async (req, res = response) => {
   
-  const token = req.body.token;
+  
+  try {
+    const { email, family_name, given_name, picture } = await googleVerify( req.body.token );
+    
+    return res.status(200).json({
+      ok: true,
+      email, family_name, given_name, picture
+    });
 
-  return res.status(200).json({
-    ok: true,
-    token,
-  });
+  } catch (error) {
+    
+    console.log(error);
+    return res.status(401).json({
+      ok: false,
+      msg: "Token de Google no válido",
+    });
+
+  }
+
+
 
 }
 
