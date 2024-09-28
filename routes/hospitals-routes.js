@@ -9,7 +9,7 @@ const { check } = require('express-validator');
 const { validateJWT } = require('../middlewares/validate-jwt');
 const { validateFields } = require('../middlewares/validate-fields');
 
-const { getHospitals, createHospital, updateHospital, deleteHospital } = require('../controllers/hospitals-controller');
+const { getHospitals, createHospital, updateHospital, deleteHospital, getHospitalById } = require('../controllers/hospitals-controller');
 
 const router = Router();
 
@@ -18,6 +18,20 @@ const router = Router();
 //? ---------------------------------------------------
 
 router.get('/', getHospitals);
+
+
+//? ---------------------------------------------------
+//? --------------- Get Hospital by ID Route ----------
+//? ---------------------------------------------------
+
+router.get('/:id', [
+    validateJWT,
+    check('id', 'Id del hospital es un campo requerido').not().isEmpty(),
+    validateFields
+],
+    getHospitalById
+)
+
 
 //? ---------------------------------------------------
 //? --------------- Create Hospitals Route --------------
@@ -33,13 +47,19 @@ router.post('/', [
 //? --------------- Update Hospitals Route --------------
 //? ---------------------------------------------------
 
-router.put('/:id', updateHospital);
+router.put('/:id', [
+    validateJWT,
+    check('str_name_hospital', 'Nombre del hospital es un campo requerido').not().isEmpty(),
+    validateFields
+], updateHospital);
 
 //? ---------------------------------------------------
 //? --------------- Delete Hospitals Route --------------
 //? ---------------------------------------------------
 
-router.delete('/:id', deleteHospital);
+router.delete('/:id', [
+    validateJWT,
+], deleteHospital);
 
 //? ---------------------------------------------------
 //? --------------- Export Module --------------
