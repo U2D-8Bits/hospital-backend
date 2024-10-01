@@ -127,5 +127,6 @@ const renewToken = async(req, res = response) => {
 
 module.exports = {
   login,
-  googleSignIn
+  googleSignIn,
+  renewToken
 };

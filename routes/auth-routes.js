@@ -5,7 +5,7 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validate-fields");
-const { login, googleSignIn } = require("../controllers/auth-controller");
+const { login, googleSignIn, renewToken } = require("../controllers/auth-controller");
 const { validateJWT } = require("../middlewares/validate-jwt");
 
 const router = Router();
@@ -33,7 +33,7 @@ router.post("/google", [
 //? -----------------------------------------------------
 //? Ruta para renovar el token
 //? -----------------------------------------------------
-router.get("/renew", validateJWT, ); 
+router.get("/renew", validateJWT, renewToken ); 
 
 
 
