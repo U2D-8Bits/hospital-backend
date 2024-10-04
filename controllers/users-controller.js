@@ -115,7 +115,14 @@ const updateUser = async (req, res = response) => {
       }
     }
 
-    fields.str_email_user = str_email_user;
+    if(!existUser.bln_google_user){
+      fields.str_email_user = str_email_user;
+    }else if( existUser.str_email_user !== str_email_user ){
+      return res.status(400).json({
+        ok: false,
+        msg: "No es posible cambiar el correo de un usuario de Google",
+      });
+    }
 
     const userUpdated = await User.findByIdAndUpdate(uid, fields, {
       new: true,
