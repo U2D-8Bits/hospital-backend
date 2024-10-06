@@ -2,6 +2,7 @@
 
 const { response } = require("express");
 const Hospital = require("../models/hospital-model");
+const { populate } = require("dotenv");
 
 
 //? -----------------------------------------------------
@@ -11,7 +12,7 @@ const Hospital = require("../models/hospital-model");
 const getHospitals = async (req, res = response) => {
 
     const hospitals = await Hospital.find().
-        populate('user', 'str_name_user')
+    populate('user', 'str_name_user str_img_user' )
 
     try {
 
@@ -50,7 +51,7 @@ const getHospitalById = async (req, res = response) => {
             })
         }
 
-        await hospitalDB.populate('user', 'str_name_user')
+        await hospitalDB.populate('user', 'str_name_user',)
 
         return res.status(200).json({
             ok: true,
