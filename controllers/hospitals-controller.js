@@ -6,30 +6,38 @@ const { populate } = require("dotenv");
 
 
 //? -----------------------------------------------------
-//? Controller to get all hospitals
+//? Controlador para obtener todos los hospitales con paginación
 //? -----------------------------------------------------
 
 const getHospitals = async (req, res = response) => {
 
-    const hospitals = await Hospital.find().
-    populate('user', 'str_name_user str_img_user' )
+    const since = Number(req.query.since) || 0;
+
+    const [hospitals, total] = await Promise.all([
+        await Hospital
+        .find({}, "str_name_hospital str_img_hospital user")
+        .populate('user', 'str_name_user str_img_user')
+        .skip(since)
+        .limit(10),
+        await Hospital.countDocuments()
+    ])
 
     try {
-
+        
         return res.status(200).json({
             ok: true,
-            hospitals
+            hospitals,
+            total
         })
-        
+
     } catch (error) {
+        
         console.log(error);
         return res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
-        });
+        })
     }
-
-
 }
 
 //? -----------------------------------------------------
