@@ -8,14 +8,38 @@ const Doctor = require("../models/doctor-model");
 //? -----------------------------------------------------
 
 const getDoctors = async (req, res = response) => {
-  const doctors = await Doctor.find()
-    .populate("user", "str_name_user")
-    .populate("hospital", "str_name_hospital");
 
-  return res.status(200).json({
-    ok: true,
-    doctors,
-  });
+  const since = Number(req.query.since) || 0;
+
+  const [doctors, total] = await Promise.all([
+    await Doctor
+    .find({}, "str_name_doctor str_img_doctor user hospital")
+    .populate('user', 'str_name_user str_img_user')
+    .populate('hospital', 'str_name_hospital str_img_hospital')
+    .skip(since)
+    .limit(10),
+    await Doctor.countDocuments()
+  ])
+
+  try {
+    
+    return res.status(200).json({
+      ok: true,
+      doctors,
+      total
+    })
+
+  } catch (error) {
+    
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: 'Por favor hable con el administrador'
+    })
+
+  }
+
+
 };
 
 

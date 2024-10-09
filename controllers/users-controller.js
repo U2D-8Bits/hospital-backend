@@ -13,7 +13,7 @@ const getUsers = async (req, res) => {
 
   const [users, total] = await Promise.all([
     await User
-    .find({},"str_name_user str_email_user str_role_user bln_google_user")
+    .find({},"str_name_user str_img_user str_email_user str_role_user bln_google_user")
     .skip(since)
     .limit(10),
     await User.countDocuments()
