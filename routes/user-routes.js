@@ -6,14 +6,14 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { getUsers, createUser, updateUser, deleteUser } = require("../controllers/users-controller.js");
 const { validateFields } = require("../middlewares/validate-fields");
-const { validateJWT } = require("../middlewares/validate-jwt.js");
+const { validateJWT, validateAdminRole } = require("../middlewares/validate-jwt.js");
 
 const router = Router();
 
 //? -----------------------------------------------------
 //? Ruta para obtener todos los usuarios
 //? -----------------------------------------------------
-router.get("/", validateJWT, getUsers);
+router.get("/", [validateJWT, validateAdminRole], getUsers);
 
 
 //? -----------------------------------------------------
@@ -22,6 +22,8 @@ router.get("/", validateJWT, getUsers);
 router.post(
   "/",
   [
+    validateJWT,
+    validateAdminRole,
     check("str_name_user", "El Nombre es un campo obligatorio").not().isEmpty(),
     check("str_password_user", "La Contraseña es un campo obligatorio")
       .not()
@@ -43,6 +45,7 @@ router.put(
   "/:id",
   [
     validateJWT,
+    validateAdminRole,
     check("str_name_user", "El Nombre es un campo obligatorio").not().isEmpty(),
     check("str_role_user", "El Rol es un campo obligatorio").not().isEmpty(),
     check("str_email_user", "El Correo elctrónico es un campo obligatorio").isEmail(),
@@ -54,6 +57,6 @@ router.put(
 //? -----------------------------------------------------
 //? Ruta para eliminar un usuario
 //? -----------------------------------------------------
-router.delete("/:id", validateJWT, deleteUser);
+router.delete("/:id", [validateJWT, validateAdminRole], deleteUser);
 
 module.exports = router;
