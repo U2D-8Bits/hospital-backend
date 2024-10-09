@@ -68,7 +68,43 @@ const validateAdminRole = async (req, res = response, next) =>{
 
 }
 
+const validateAdminRole_or_MySelf = async (req, res = response, next) =>{
+
+    const uid = req.uid;
+    const id = req.params.id;
+
+    try {
+        
+        const userDb = await User.findById(uid);
+
+        if( !userDb ){
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no existe'
+            });
+        }
+
+        if( userDb.str_role_user !== 'ADMIN_ROLE' && uid !== id ){
+            return res.status(403).json({
+                ok: false,
+                msg: 'No tiene privilegios para realizar esta acción'
+            });
+        }
+
+        next();
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+}
+
 module.exports = {
     validateJWT,
-    validateAdminRole
+    validateAdminRole,
+    validateAdminRole_or_MySelf
 }
