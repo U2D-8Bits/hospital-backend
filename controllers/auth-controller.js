@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user-module");
 const { generateToken } = require("../helpers/jwt-helper");
 const { googleVerify } = require("../helpers/google-helper");
+const { getMenuFrontEnd } = require("../helpers/menu-helper");
 //? -----------------------------------------------------
 //? Controlador para iniciar sesión (Login)
 //? -----------------------------------------------------
@@ -39,6 +40,7 @@ const login = async (req, res = response) => {
     return res.status(200).json({
       ok: true,
       token,
+      menu:getMenuFrontEnd(userDB.str_role_user)
     });
   } catch (error) {
     console.log(error);
@@ -90,7 +92,8 @@ const googleSignIn = async (req, res = response) => {
     return res.status(200).json({
       ok: true,
       token,
-      user
+      user,
+      menu:getMenuFrontEnd(user.str_role_user)
     });
 
   } catch (error) {
@@ -123,7 +126,8 @@ const renewToken = async(req, res = response) => {
   return res.status(200).json({
     ok: true,
     token,
-    user: userDb
+    user: userDb,
+    menu:getMenuFrontEnd(userDb.str_role_user)
   })
 
 }
