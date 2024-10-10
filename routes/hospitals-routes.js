@@ -6,7 +6,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { validateJWT } = require('../middlewares/validate-jwt');
+const { validateJWT, validateAdminRole } = require('../middlewares/validate-jwt');
 const { validateFields } = require('../middlewares/validate-fields');
 
 const { getHospitals, createHospital, updateHospital, deleteHospital, getHospitalById, getAllHospitals } = require('../controllers/hospitals-controller');
@@ -32,6 +32,7 @@ router.get('/all', [validateJWT], getAllHospitals )
 
 router.get('/:id', [
     validateJWT,
+    validateAdminRole,
     check('id', 'Id del hospital es un campo requerido').not().isEmpty(),
     validateFields
 ],
@@ -45,6 +46,7 @@ router.get('/:id', [
 
 router.post('/', [
     validateJWT,
+    validateAdminRole,
     check('str_name_hospital', 'Nombre del hospital es un campo requerido').not().isEmpty(),
     validateFields
 ], createHospital);
@@ -55,6 +57,7 @@ router.post('/', [
 
 router.put('/:id', [
     validateJWT,
+    validateAdminRole,
     check('str_name_hospital', 'Nombre del hospital es un campo requerido').not().isEmpty(),
     validateFields
 ], updateHospital);
@@ -65,6 +68,7 @@ router.put('/:id', [
 
 router.delete('/:id', [
     validateJWT,
+    validateAdminRole,
 ], deleteHospital);
 
 //? ---------------------------------------------------

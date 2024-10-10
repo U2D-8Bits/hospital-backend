@@ -6,7 +6,7 @@
 const { Router } = require('express');
 const { check} = require('express-validator');
 
-const { validateJWT } = require('../middlewares/validate-jwt');
+const { validateJWT, validateAdminRole } = require('../middlewares/validate-jwt');
 const { validateFields } = require('../middlewares/validate-fields');
 
 const { getDoctors, createDoctor, updateDoctor, deleteDoctor, getDoctorById } = require('../controllers/doctors-controller');
@@ -17,7 +17,7 @@ const router = Router();
 //? --------------- Gets Doctors Route --------------
 //? ---------------------------------------------------
 
-router.get('/', getDoctors);
+router.get('/', [validateJWT], getDoctors);
 
 
 //? ---------------------------------------------------
@@ -37,6 +37,7 @@ router.get("/:id", [
 
 router.post('/', [
     validateJWT,
+    validateAdminRole,
     check('str_name_doctor', 'El nombre del doctor es un campo requerido').not().isEmpty(),
     check('hospital', 'El hospital id debe ser válido').isMongoId(),
     validateFields
@@ -48,6 +49,7 @@ router.post('/', [
 
 router.put('/:id', [
     validateJWT,
+    validateAdminRole,
     check('str_name_doctor', 'El nombre del doctor es un campo requerido').not().isEmpty(),
     check('hospital', 'El hospital id debe ser válido').isMongoId(),
     validateFields
@@ -58,7 +60,8 @@ router.put('/:id', [
 //? ---------------------------------------------------
 
 router.delete('/:id', [
-    validateJWT
+    validateJWT,
+    validateAdminRole,
 ], deleteDoctor);
 
 //? ---------------------------------------------------
